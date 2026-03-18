@@ -1,0 +1,204 @@
+﻿using java.io;
+using java.math;
+using java.sql;
+using Ormix.retry;
+
+namespace Ormix.NamedParam
+{
+    public class NamedParameterCallebleStatement : DelegatingCallebleStatement
+    {
+        private readonly List<string> orderedParameters;
+        private static readonly RetryExecution queryRetryExecution = new RetryExecution(RetryType.Query);
+
+        private NamedParameterCallebleStatement(CallableStatement delegateStatement, List<string> orderedParameters)
+            : base(delegateStatement)
+        {
+            this.orderedParameters = orderedParameters;
+        }
+
+        public static ParseResult parse(string query)
+        {
+            return SqlParser.Parse(query);
+        }
+
+        //factory methods for all possible CallebleStatement constructors
+        public static NamedParameterCallebleStatement createNamedParameterPreparedStatement(Connection conn, string sql)
+        {
+            ParseResult parseResult = parse(sql);
+            return queryRetryExecution.Handle<NamedParameterCallebleStatement>(() =>
+            {
+                var callebleStatement = conn.prepareCall(parseResult.GetSql());
+                return new NamedParameterCallebleStatement(callebleStatement,
+                    parseResult.GetOrderedParameters());
+            });
+        }
+
+        public static NamedParameterCallebleStatement createNamedParameterPreparedStatement(Connection conn, string sql,
+                int resultSetType, int resultSetConcurrency)
+        {
+            ParseResult parseResult = parse(sql);
+            return queryRetryExecution.Handle<NamedParameterCallebleStatement>(() =>
+            {
+                var callebleStatement = conn.prepareCall(parseResult.GetSql(),
+                    resultSetType,
+                    resultSetConcurrency);
+
+                return new NamedParameterCallebleStatement(callebleStatement,
+                    parseResult.GetOrderedParameters());
+            });
+        }
+
+        public static NamedParameterCallebleStatement createNamedParameterPreparedStatement(Connection conn, string sql,
+                int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+        {
+            ParseResult parseResult = parse(sql);
+            return queryRetryExecution.Handle<NamedParameterCallebleStatement>(() =>
+            {
+                var callebleStatement = conn.prepareCall(parseResult.GetSql(),
+                    resultSetType,
+                    resultSetConcurrency,
+                    resultSetHoldability);
+
+                return new NamedParameterCallebleStatement(callebleStatement,
+                    parseResult.GetOrderedParameters());
+            });
+        }
+
+        private List<int> getParameterIndexes(string parameter)
+        {
+            var indexes = new List<int>();
+            for (int i = 0; i < orderedParameters.Count; i++)
+                if (orderedParameters[i] == parameter)
+                    indexes.Add(i + 1);
+
+            if (!indexes.Any())
+                throw new ArgumentException($"SQL statement doesn't contain the parameter '{parameter}'");
+
+            return indexes;
+        }
+
+        public void setNull(string parameter, int sqlType)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setNull(i, sqlType);
+        }
+
+        public void setBoolean(string parameter, bool x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setBoolean(i, x);
+        }
+
+        public void setByte(string parameter, byte x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setByte(i, x);
+        }
+
+        public void setShort(string parameter, short x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setShort(i, x);
+        }
+
+        public void setInt(string parameter, int x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setInt(i, x);
+        }
+
+        public void setLong(string parameter, long x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setLong(i, x);
+        }
+
+        public void setFloat(string parameter, float x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setFloat(i, x);
+        }
+
+        public void setDouble(string parameter, double x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setDouble(i, x);
+        }
+
+        public void setBigDecimal(string parameter, BigDecimal x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setBigDecimal(i, x);
+
+        }
+
+        public void setstring(string parameter, string x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setString(i, x);
+        }
+
+        public void setBytes(string parameter, byte[] x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setBytes(i, x);
+        }
+
+        public void setDate(string parameter, java.sql.Date x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setDate(i, x);
+        }
+
+        public void setTime(string parameter, Time x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setTime(i, x);
+        }
+
+        public void setTimestamp(string parameter, Timestamp x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setTimestamp(i, x);
+
+        }
+
+        public void setAsciiStream(string parameter, InputStream x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setAsciiStream(i, x);
+        }
+
+
+        [Obsolete()]
+        public void setUnicodeStream(string parameter, InputStream x, int length)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setUnicodeStream(i, x, length);
+        }
+
+        public void setBinaryStream(string parameter, InputStream x, int length)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setBinaryStream(i, x, length);
+        }
+
+        public void setObject(string parameter, object x, int targetSqlType, int scale)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setObject(i, x, targetSqlType, scale);
+        }
+
+        public void setObject(string parameter, object x, int targetSqlType)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setObject(i, x, targetSqlType);
+        }
+
+        public void setObject(string parameter, object x)
+        {
+            foreach (int i in getParameterIndexes(parameter))
+                getDelegate().setObject(i, x);
+        }
+    }
+}

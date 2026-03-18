@@ -17,6 +17,8 @@
 		<PackageTags>informix,orm</PackageTags>
 		<PackageOutputPath>..\..\packages</PackageOutputPath>
 		<PackageProjectUrl>https://github.com/ismailkocacan/ORMix</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 
@@ -47,6 +49,10 @@
 
 	<ItemGroup>
 	  <None Include="..\..\assets\ormix_128.jpeg">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\..\README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>

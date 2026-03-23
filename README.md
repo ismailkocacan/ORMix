@@ -55,3 +55,24 @@ public class ConnectionStringConfiguration : IConnectionStringConfiguration
 	}
 }
 ```
+
+Simply inject ConnectionContext class and use.
+```csharp
+ public class RepositoryPerson(Ormix.DataSources.ConnectionContext connectionContext) 
+ {	 
+	public Person? GetBy(Guid uuid)
+	{
+		return connectionContext.Connection
+			.QuerySingle<Person>(
+			   @"select id
+					  , firstname
+					  , lastname
+					  , created 
+				from person where id = :id",
+			   new
+			   {
+				   id = uuid
+			   });
+	}	 
+ }
+ ```

@@ -23,3 +23,35 @@ A high-performance .NET ORM designed for Informix with JDBC-inspired features an
 
 ## Nuget
 dotnet add package ORMix --version 1.0.0
+
+```csharp
+using Ormix.ServiceCollections;
+var builder = WebApplication.CreateBuilder(args);
+.
+.
+builder.Services.AddInformixServices(new ConnectionStringConfiguration(builder.Configuration));
+
+var app = builder.Build();
+.
+.
+app.Run();
+```
+
+
+ConnectionStringConfiguration class
+```csharp
+public class ConnectionStringConfiguration : IConnectionStringConfiguration
+{
+	private readonly IConfiguration configuration;
+	public ConnectionStringConfiguration(IConfiguration configuration)
+	{
+		this.configuration = configuration;
+	}
+  
+	public string GetConnectionString(IServiceProvider? serviceProvider = null)
+	{
+		// Provide a JDBC URL...
+		return configuration.GetConnectionString("Informix")!;
+	}
+}
+```

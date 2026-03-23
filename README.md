@@ -21,3 +21,5 @@ A high-performance .NET ORM designed for Informix with JDBC-inspired features an
   Ready-to-use methods for various administrative commands and system monitoring tables.
 
 
+## Nuget
+dotnet add package ORMix --version 1.0.0

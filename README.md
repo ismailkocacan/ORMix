@@ -5,19 +5,19 @@ A high-performance .NET ORM designed for Informix with JDBC-inspired features an
 
 ## Özellikler
 
-- **Connection Mapping**  
+- **Connection Sınıfına Uzanım Methodlar**  
   java.sql.Connection sınıfına özel, mapping extension methodlar.
 
-- **Named Parameters in SQL Queries**  
+- **SQL Sorgularında İsimli Parametreler**  
   SQL sorgularında örneğin :id gibi isimli parametrelere, dinamik anonim nesnelerle parametre geçebilme.
 
-- **Transaction Management**  
+- **Transaction Yönetimi**  
   Transaction yöntemi için çeşitli sınıflar.
 
-- **Retry Mechanisms**  
+- **Retry Mekanizmaları**  
   Geçiçi bağlantı hataları(network) ve geçici kilit(lock) hataları için tekrar deneme(retry) mekanizmaları.
 
-- **Administrative and Monitoring Support**  
+- **Çeşitli Yönetimsel ve Sistem İzleme Komutları**  
   Çeşitli yönetimsel komut ve sistem monitoring tabloları için hazır kullanım methodları.
 
 

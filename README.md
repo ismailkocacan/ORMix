@@ -1,4 +1,87 @@
 # ORMix
+Yüksek performanslı JDBC tabanlı informix .NET ORM.
+
+A high-performance .NET ORM designed for Informix with JDBC-inspired features and robust transaction and retry mechanisms.
+
+## Özellikler
+
+- **Connection Mapping**  
+  java.sql.Connection sınıfına özel, mapping extension methodlar.
+
+- **Named Parameters in SQL Queries**  
+  SQL sorgularında örneğin :id gibi isimli parametrelere, dinamik anonim nesnelerle parametre geçebilme.
+
+- **Transaction Management**  
+  Transaction yöntemi için çeşitli sınıflar.
+
+- **Retry Mechanisms**  
+  Geçiçi bağlantı hataları(network) ve geçici kilit(lock) hataları için tekrar deneme(retry) mekanizmaları.
+
+- **Administrative and Monitoring Support**  
+  Çeşitli yönetimsel komut ve sistem monitoring tabloları için hazır kullanım methodları.
+
+
+## Nuget
+dotnet add package ORMix --version 1.0.0
+
+```csharp
+using Ormix.ServiceCollections;
+var builder = WebApplication.CreateBuilder(args);
+.
+.
+builder.Services.AddInformixServices(new ConnectionStringConfiguration(builder.Configuration));
+
+var app = builder.Build();
+.
+.
+app.Run();
+```
+
+
+ConnectionStringConfiguration sınıfı
+```csharp
+public class ConnectionStringConfiguration : IConnectionStringConfiguration
+{
+	private readonly IConfiguration configuration;
+	public ConnectionStringConfiguration(IConfiguration configuration)
+	{
+		this.configuration = configuration;
+	}
+  
+	public string GetConnectionString(IServiceProvider? serviceProvider = null)
+	{
+		// Provide a JDBC URL...
+		return configuration.GetConnectionString("Informix")!;
+	}
+}
+```
+
+Basitçe ConnectionContext sınıfı enjekte edip kullanabilirsiniz.
+```csharp
+ public class RepositoryPerson(Ormix.DataSources.ConnectionContext connectionContext) 
+ {	 
+	public Person? GetBy(Guid uuid)
+	{
+		return connectionContext.Connection
+			.QuerySingle<Person>(
+			   @"select id
+					  , firstname
+					  , lastname
+					  , created 
+				from person where id = :id",
+			   new
+			   {
+				   id = uuid
+			   });
+	}	 
+ }
+ ```
+
+
+---
+
+ 
+# ORMix
 High-Performance JDBC-Based Informix .NET ORM
 
 A high-performance .NET ORM designed for Informix with JDBC-inspired features and robust transaction and retry mechanisms.

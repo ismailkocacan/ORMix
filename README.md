@@ -14,7 +14,7 @@ A high-performance .NET ORM designed for Informix with JDBC-inspired features an
 - **Transaction Yönetimi**  
   Transaction yöntemi için çeşitli sınıflar.
 
-- **Retry Mekanizmaları**  
+- **Tekrar Mekanizmaları**  
   Geçiçi bağlantı hataları(network) ve geçici kilit(lock) hataları için tekrar deneme(retry) mekanizmaları.
 
 - **Çeşitli Yönetimsel ve Sistem İzleme Komutları**  

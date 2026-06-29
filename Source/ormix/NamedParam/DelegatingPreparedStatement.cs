@@ -1,4 +1,5 @@
-﻿/*
+﻿#pragma warning disable CS0612
+/*
   This source orginal from: https://github.com/axiom-data-science/jdbc-named-parameters/
 */
 

@@ -1,4 +1,5 @@
-﻿using java.io;
+﻿#pragma warning disable CS0108
+using java.io;
 using java.math;
 using java.sql;
 using Ormix.retry;

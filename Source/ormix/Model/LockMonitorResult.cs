@@ -9,8 +9,8 @@ namespace Ormix.Model
     public class LockMonitorResult
     {
         public int WaitSessionId { get; set; }
-        public string SessionMonitorDatabaseServer { get; set; }
-        public string WaitSessionSql { get; set; }
-        public List<LockSessionInfo> LockSessionInfos { get; set; }
+        public string SessionMonitorDatabaseServer { get; set; } = null!;
+        public string WaitSessionSql { get; set; } = null!;
+        public List<LockSessionInfo> LockSessionInfos { get; set; } = null!;
     }
 }

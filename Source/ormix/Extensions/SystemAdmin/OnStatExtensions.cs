@@ -149,7 +149,7 @@ namespace Ormix.Extensions.SystemAdmin
 
     public class OnStatLockSnapshotData
     {
-        public List<UserThread> UserThreads { get; set; }
-        public List<ActiveLock> ActiveLocks { get; set; }
+        public List<UserThread> UserThreads { get; set; } = null!;
+        public List<ActiveLock> ActiveLocks { get; set; } = null!;
     }
 }

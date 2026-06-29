@@ -1,4 +1,5 @@
-﻿/*
+﻿#pragma warning disable CS8618
+/*
  https://www.ibm.com/docs/en/informix-servers/14.10.0?topic=down-enable-sql-tracing
  https://www.ibm.com/docs/en/informix-servers/14.10.0?topic=down-disable-sql-tracing-globally-session
  */

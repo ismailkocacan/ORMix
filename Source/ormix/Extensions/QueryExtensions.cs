@@ -1,4 +1,5 @@
-﻿//#define ENABLE_EXCEPTIONS
+﻿#pragma warning disable CS0612
+//#define ENABLE_EXCEPTIONS
 //#undef ENABLE_EXCEPTIONS
 
 using java.sql;
@@ -440,7 +441,7 @@ namespace Ormix.Extensions
                     while (statementResult.resultSet.next())
                     {
                         var value = statementResult.resultSet.getString(1);
-                        result.Data.Add(string.IsNullOrEmpty(value) ? null : value.Trim());
+                        result.Data.Add(string.IsNullOrEmpty(value) ? null! : value.Trim());
                     }
                     return result;
                 }
@@ -595,7 +596,7 @@ namespace Ormix.Extensions
             }
         }
 
-        public static AggregateResult<T, R> Query<T, R>(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false, Action<T, R> aggregate = null)
+        public static AggregateResult<T, R> Query<T, R>(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false, Action<T, R>? aggregate = null)
         where T : class, new()
         where R : class, new()
 
@@ -642,7 +643,7 @@ namespace Ormix.Extensions
                     {
                         T instance = new T();
                         statementResult.resultSet.Map(resultSetMetaData, ref instance, typeOfT);
-                        aggregate(instance, result.AggregateValue);
+                        aggregate?.Invoke(instance, result.AggregateValue);
                         list.Add(instance);
                     }
 
@@ -1249,7 +1250,7 @@ namespace Ormix.Extensions
                 if (isGuid || isGuidNullable)
                 {
                     object? objValue = property.GetValue(parameters);
-                    statement.setstring(property.Name, objValue == null ? null : objValue.ToString());
+                    statement.setstring(property.Name, objValue == null ? null! : (objValue.ToString() ?? string.Empty));
                     continue;
                 }
 
@@ -1349,7 +1350,7 @@ namespace Ormix.Extensions
                 if (isGuid || isGuidNullable)
                 {
                     object? objValue = property.GetValue(parameters);
-                    statement.setstring(property.Name, objValue == null ? null : objValue.ToString());
+                    statement.setstring(property.Name, objValue == null ? null! : (objValue.ToString() ?? string.Empty));
                     continue;
                 }
 

@@ -4,9 +4,9 @@ namespace Ormix.Extensions
 {
     public class ResultMetaData
     {
-        public string ColumnName { get; set; }
+        public string ColumnName { get; set; } = null!;
         public int ColumnType { get; set; }
-        public string ColumnTypeName { get; set; }
+        public string ColumnTypeName { get; set; } = null!;
         public int ColumnSize { get; set; }
         public int ColumnPrecision { get; set; }
         public int ColumnScale { get; set; }
@@ -19,7 +19,7 @@ namespace Ormix.Extensions
             this.Data = new List<T>();
         }
 
-        public List<ResultMetaData> MetaData { get; set; }
+        public List<ResultMetaData> MetaData { get; set; } = null!;
         public List<T> Data { get; set; }
 
         public long RecordCount => Data.Count;
@@ -51,7 +51,7 @@ namespace Ormix.Extensions
 
     public class AggregateResult<T, R> : Result<T>
     {
-        public R AggregateValue { get; set; }
+        public R AggregateValue { get; set; } = default!;
     }
 
     public class DynamicResult : Result<dynamic>
@@ -137,7 +137,7 @@ namespace Ormix.Extensions
 
         }
 
-        public static DynamicPagingResult Empty(Page page, int totalRecordCount)
+        public static new DynamicPagingResult Empty(Page page, int totalRecordCount)
         {
             return new DynamicPagingResult(new List<dynamic>(), page, totalRecordCount);
         }

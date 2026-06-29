@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -19,6 +19,15 @@
 		<PackageProjectUrl>https://github.com/ismailkocacan/ORMix</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<!--
+			IKVM derleme uyarılarını kapatıyoruz (IKVMC0100 ve IKVMC0109).
+			Bu uyarılar, Informix JDBC sürücüsünün (Java) .NET'e dönüştürülmesi sırasında MongoDB/BSON gibi isteğe bağlı Java bağımlılıklarının bulunamamasından kaynaklanır ve zararsızdır.
+			
+			Suppressing IKVM compiler warnings (IKVMC0100 and IKVMC0109).
+			These warnings occur during the conversion of the Informix JDBC driver (Java) to .NET because optional Java dependencies like MongoDB/BSON cannot be resolved, which is harmless.
+		-->
+		<NoWarn>$(NoWarn);IKVMC0100;IKVMC0109</NoWarn>
 	</PropertyGroup>
 
 

@@ -7,7 +7,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>ORMix</PackageId>
 		<Title>ORMix</Title>
-		<Version>1.0.0</Version>
+		<Version>2.0.0</Version>
 		<Authors>ismailkocacan</Authors>
 		<Company></Company>
 		<Product>Ormix</Product>

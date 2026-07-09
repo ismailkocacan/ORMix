@@ -797,6 +797,11 @@ namespace Ormix.Extensions.SystemAdmin
         /// </summary>
         public int sid { get; set; }
 
+
+        public int sid_owner { get; set; }
+        public int sid_waiter { get; set; }
+
+
         /// <summary>
         /// User ID
         /// </summary>
@@ -816,6 +821,13 @@ namespace Ormix.Extensions.SystemAdmin
         /// Hostname of client
         /// </summary>
         public string hostname { get; set; }
+
+
+        /// <summary>
+        /// Hostname of client
+        /// </summary>
+        public string? hostname2 { get; set; }
+
 
         /// <summary>
         /// Name of the user's stderr file
@@ -889,6 +901,14 @@ namespace Ormix.Extensions.SystemAdmin
         /// Flags
         /// </summary>
         public int state { get; set; }
+
+
+        public bool AnySetFlag()
+        {
+            return this.is_wlock == 1 ||
+                   this.is_wlatch == 1 ||
+                   this.is_incrit == 1;
+        }
     }
 
 

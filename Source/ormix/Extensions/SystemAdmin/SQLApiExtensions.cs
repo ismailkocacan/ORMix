@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS8618
-/*
+﻿/*
  https://www.ibm.com/docs/en/informix-servers/14.10.0?topic=down-enable-sql-tracing
  https://www.ibm.com/docs/en/informix-servers/14.10.0?topic=down-disable-sql-tracing-globally-session
  */
@@ -63,10 +62,49 @@ namespace Ormix.Extensions.SystemAdmin
                 union all select sysadmin:task('set sql tracing session list')     from sysmaster:sysdual").Data;
         }
 
-        public static List<SqlSysSession> GetSessions(this Connection dbConnection)
+        public static async Task<AggregateResult<SqlSysSession, SqlSysSessionAggregate>> GetSessionsAsync(this Connection dbConnection, CancellationToken cancellationToken = default)
+            => await Task.Run(() => dbConnection.GetSessions(), cancellationToken);
+
+
+        public static AggregateResult<SqlSysSession, SqlSysSessionAggregate> GetSessions(this Connection dbConnection)
         {
             return dbConnection
-                .Query<SqlSysSession>("select * from sysmaster:syssessions").Data;
+                .Query<SqlSysSession, SqlSysSessionAggregate>(
+                    @"select 
+                         s.sid
+                        ,l.owner as sid_owner
+                        ,l.waiter as sid_waiter
+                        ,s.username
+                        ,s.uid
+                        ,s.pid
+                        ,trim(s.hostname) hostname
+                        ,s.tty
+                        ,s.connected
+                        ,trim(s.feprogram) feprogram
+                        ,s.pooladdr
+                        ,s.is_wlatch 
+                        ,s.is_wlock 
+                        ,s.is_wbuff
+                        ,s.is_wckpt 
+                        ,s.is_wlogbuf  
+                        ,s.is_wtrans  
+                        ,s.is_monitor  
+                        ,s.is_incrit
+                        ,s.state   
+                    from sysmaster:syssessions as s
+                    left join sysmaster:syslocks as l on l.waiter = s.sid
+                    left join sysmaster:syssessions as s2 on s2.sid = l.owner"
+                , aggregate: (sysSession, sqlSysLockAggregate) =>
+                {
+                    if (sysSession.is_wlock == 1)
+                        sqlSysLockAggregate.wlock_count++;
+
+                    if (sysSession.is_incrit == 1)
+                        sqlSysLockAggregate.incrit_count++;
+
+                    if (sysSession.is_wlatch == 1)
+                        sqlSysLockAggregate.wlatch_count++;
+                });
         }
 
         public static List<CommandHistory> GetCommandHistory(this Connection dbConnection)
@@ -588,6 +626,18 @@ namespace Ormix.Extensions.SystemAdmin
         public int waiter_session_count { get; set; }
     }
 
+    public class SqlSysSessionAggregate
+    {
+        public int wlock_count { get; set; }
+        public int wlatch_count { get; set; }
+        public int incrit_count { get; set; }
+
+        public bool HasAnyStatus
+            => wlock_count > 0 ||
+                wlatch_count > 0 ||
+                incrit_count > 0;
+    }
+
     public class SysDatabase
     {
         public int partnum { get; set; }
@@ -747,6 +797,11 @@ namespace Ormix.Extensions.SystemAdmin
         /// </summary>
         public int sid { get; set; }
 
+
+        public int sid_owner { get; set; }
+        public int sid_waiter { get; set; }
+
+
         /// <summary>
         /// User ID
         /// </summary>
@@ -766,6 +821,13 @@ namespace Ormix.Extensions.SystemAdmin
         /// Hostname of client
         /// </summary>
         public string hostname { get; set; }
+
+
+        /// <summary>
+        /// Hostname of client
+        /// </summary>
+        public string? hostname2 { get; set; }
+
 
         /// <summary>
         /// Name of the user's stderr file
@@ -839,6 +901,14 @@ namespace Ormix.Extensions.SystemAdmin
         /// Flags
         /// </summary>
         public int state { get; set; }
+
+
+        public bool AnySetFlag()
+        {
+            return this.is_wlock == 1 ||
+                   this.is_wlatch == 1 ||
+                   this.is_incrit == 1;
+        }
     }
 
 

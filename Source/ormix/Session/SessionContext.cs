@@ -7,7 +7,7 @@
         string? Client { get; set; }
     }
 
-    internal class SessionContext : ISessionContext
+    public class SessionContext : ISessionContext
     {
         public int SessionId { get; set; }
         public int ThreadId { get; set; }

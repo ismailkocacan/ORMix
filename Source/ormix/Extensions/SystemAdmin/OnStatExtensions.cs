@@ -6,6 +6,19 @@ namespace Ormix.Extensions.SystemAdmin
 {
     public static class OnStatExtensions
     {
+        /// <summary>
+        /// Use the onstat -m command to display the 20 most recent lines of the system message log.
+        /// https://www.ibm.com/docs/en/informix-servers/12.10.0?topic=ou-onstat-m-command-print-recent-system-message-log-information
+        /// </summary>
+        /// <param name="dbConnection"></param>
+        /// <param name="executedSql"></param>
+        /// <returns></returns>
+        public static string PrintRecentTop20SystemMessageLogInformation(this Connection dbConnection, out string executedSql)
+        {
+            executedSql = $"execute function sysadmin:task('onstat','-m');";
+            return dbConnection.QuerySingleString(executedSql).Data[0];
+        }
+
 
         /// <summary>
         /// The command onstat -g env sid displays the environment for the session
@@ -149,7 +162,7 @@ namespace Ormix.Extensions.SystemAdmin
 
     public class OnStatLockSnapshotData
     {
-        public List<UserThread> UserThreads { get; set; } = null!;
-        public List<ActiveLock> ActiveLocks { get; set; } = null!;
+        public List<UserThread> UserThreads { get; set; }
+        public List<ActiveLock> ActiveLocks { get; set; }
     }
 }

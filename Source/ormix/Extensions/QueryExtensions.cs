@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS0612
-//#define ENABLE_EXCEPTIONS
+﻿//#define ENABLE_EXCEPTIONS
 //#undef ENABLE_EXCEPTIONS
 
 using java.sql;
@@ -40,6 +39,9 @@ namespace Ormix.Extensions
                 resultSet = resultSet
             };
         }
+
+        public static async Task<int> ExecuteAsync(this Connection connection, string sql, dynamic? parameters = null, CancellationToken cancellationToken = default)
+            => await Task.Run(() => Execute(connection, sql), cancellationToken);
 
         public static int Execute(this Connection connection, string sql, dynamic? parameters = null)
         {
@@ -441,7 +443,7 @@ namespace Ormix.Extensions
                     while (statementResult.resultSet.next())
                     {
                         var value = statementResult.resultSet.getString(1);
-                        result.Data.Add(string.IsNullOrEmpty(value) ? null! : value.Trim());
+                        result.Data.Add(string.IsNullOrEmpty(value) ? null : value.Trim());
                     }
                     return result;
                 }
@@ -596,7 +598,7 @@ namespace Ormix.Extensions
             }
         }
 
-        public static AggregateResult<T, R> Query<T, R>(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false, Action<T, R>? aggregate = null)
+        public static AggregateResult<T, R> Query<T, R>(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false, Action<T, R> aggregate = null)
         where T : class, new()
         where R : class, new()
 
@@ -643,7 +645,7 @@ namespace Ormix.Extensions
                     {
                         T instance = new T();
                         statementResult.resultSet.Map(resultSetMetaData, ref instance, typeOfT);
-                        aggregate?.Invoke(instance, result.AggregateValue);
+                        aggregate(instance, result.AggregateValue);
                         list.Add(instance);
                     }
 
@@ -760,6 +762,10 @@ namespace Ormix.Extensions
             var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(value));
             return Convert.ToHexString(byteArray);
         }
+
+        public static async Task<DynamicCompiledResult> QueryDynamicCompiledAsync(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false, CancellationToken cancellationToken = default)
+            => await Task.Run(() => QueryDynamicCompiled(connection, sql, parameters, includeMetaData, isblobSelect), cancellationToken);
+
 
         public static DynamicCompiledResult QueryDynamicCompiled(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false)
         {
@@ -1250,7 +1256,7 @@ namespace Ormix.Extensions
                 if (isGuid || isGuidNullable)
                 {
                     object? objValue = property.GetValue(parameters);
-                    statement.setstring(property.Name, objValue == null ? null! : (objValue.ToString() ?? string.Empty));
+                    statement.setstring(property.Name, objValue == null ? null : objValue.ToString());
                     continue;
                 }
 
@@ -1350,7 +1356,7 @@ namespace Ormix.Extensions
                 if (isGuid || isGuidNullable)
                 {
                     object? objValue = property.GetValue(parameters);
-                    statement.setstring(property.Name, objValue == null ? null! : (objValue.ToString() ?? string.Empty));
+                    statement.setstring(property.Name, objValue == null ? null : objValue.ToString());
                     continue;
                 }
 

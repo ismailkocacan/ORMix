@@ -40,6 +40,9 @@ namespace Ormix.Extensions
             };
         }
 
+        public static async Task<int> ExecuteAsync(this Connection connection, string sql, dynamic? parameters = null, CancellationToken cancellationToken = default)
+            => await Task.Run(() => Execute(connection, sql), cancellationToken);
+
         public static int Execute(this Connection connection, string sql, dynamic? parameters = null)
         {
             using var statement = NamedParameterPreparedStatement
@@ -759,6 +762,10 @@ namespace Ormix.Extensions
             var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(value));
             return Convert.ToHexString(byteArray);
         }
+
+        public static async Task<DynamicCompiledResult> QueryDynamicCompiledAsync(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false, CancellationToken cancellationToken = default)
+            => await Task.Run(() => QueryDynamicCompiled(connection, sql, parameters, includeMetaData, isblobSelect), cancellationToken);
+
 
         public static DynamicCompiledResult QueryDynamicCompiled(this Connection connection, string sql, dynamic? parameters = null, bool includeMetaData = false, bool isblobSelect = false)
         {
